@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { createClient } from "@libsql/client";
 import { NextResponse } from "next/server";
 
@@ -8,14 +9,14 @@ const db = createClient({
 });
 
 export async function GET() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   const res = await db.execute("SELECT * FROM fiches ORDER BY id DESC");
   return NextResponse.json(res.rows);
 }
 
 export async function POST(req) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   const body = await req.json();
   const { nom, prenom, annee, genre, ...rest } = body;

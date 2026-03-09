@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { createClient } from "@libsql/client";
 import { NextResponse } from "next/server";
 
@@ -8,7 +9,7 @@ const db = createClient({
 });
 
 export async function PUT(req, { params }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   const body = await req.json();
   const { nom, prenom, annee, genre, ...rest } = body;
@@ -20,7 +21,7 @@ export async function PUT(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   await db.execute({
     sql: "DELETE FROM fiches WHERE id=?",
