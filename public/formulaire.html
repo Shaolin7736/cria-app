@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche Bilan CRIA</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#b84c0a;--green-mid:#d4621a;--green-light:#fdeede;--green-pale:#fdf6f0;
+  --green-border:#f0c49a;--green-dark:#6b2500;--amber:#c47d00;--amber-light:#fff8e0;
+  --red:#b02020;--red-light:#fde8e8;--blue:#5a3e8a;--blue-light:#ede8f8;
+  --text:#2a1a0a;--text-soft:#6b4a2a;--text-muted:#b89070;
+  --bg:#fdf3ea;--card:#fffaf5;
+  --shadow:0 2px 12px rgba(184,76,10,.08);--shadow-lg:0 8px 32px rgba(184,76,10,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);font-size:14px;line-height:1.5;background-image:radial-gradient(ellipse at 80% 10%, #fce8d8 0%, transparent 55%), radial-gradient(ellipse at 10% 90%, #fde0c8 0%, transparent 50%)}
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:256px;min-height:100vh;background:linear-gradient(170deg,#6b2500 0%,#8b3a10 60%,#7a2e08 100%);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+.sb-logo{padding:22px 20px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo h1{color:#fff;font-size:17px;font-weight:800;letter-spacing:-.5px}
+.sb-logo p{color:rgba(255,255,255,.45);font-size:12px;margin-top:2px}
+.sb-annee{display:flex;align-items:center;gap:8px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-annee label{color:rgba(255,255,255,.55);font-size:12px}
+.annee-inp{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#fff;font-size:14px;font-weight:700;width:64px;text-align:center;padding:4px 6px;outline:none;font-family:'DM Mono',monospace}
+.sb-section{padding:16px 20px 0}
+.sb-sec-title{color:rgba(255,255,255,.3);font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);font-family:inherit;font-size:13px;font-weight:500;padding:8px 10px;border-radius:8px;text-align:left;transition:all .15s;margin-bottom:2px}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-btn.active{background:rgba(255,255,255,.15);color:#fff;font-weight:700}
+.nav-btn .ico{font-size:15px;width:20px;text-align:center}
+.sb-stats{margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,.08)}
+.stat-b{background:rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;margin-bottom:8px}
+.stat-b .num{color:#fff;font-size:22px;font-weight:800;font-family:'DM Mono',monospace}
+.stat-b .lbl{color:rgba(255,255,255,.45);font-size:11px;margin-top:1px}
+
+/* MAIN */
+.main{flex:1;padding:28px 32px;overflow-y:auto;max-width:880px}
+.view{display:none}
+.view.active{display:block}
+.pg-title{font-size:21px;font-weight:800;color:var(--green-dark);margin-bottom:3px;letter-spacing:-.5px}
+.pg-sub{color:var(--text-soft);font-size:13px;margin-bottom:22px}
+
+/* CARD */
+.card{background:var(--card);border-radius:14px;border:1.5px solid var(--green-border);padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(184,76,10,.07)}
+.card-title{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;margin-bottom:13px;display:flex;align-items:center;gap:6px}
+.card-title .ico{font-size:15px}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.g3{display:grid;grid-template-columns:76px 1fr 1fr;gap:13px}
+
+/* FIELD */
+.field{display:flex;flex-direction:column;gap:5px}
+.lbl{font-size:11px;font-weight:700;color:var(--green);letter-spacing:.5px;text-transform:uppercase}
+.inp{border:1.5px solid var(--green-border);border-radius:8px;padding:8px 11px;font-size:14px;outline:none;background:var(--green-pale);width:100%;font-family:inherit;transition:border-color .15s;color:var(--text)}
+.inp:focus{border-color:var(--green);background:#fff}
+textarea.inp{resize:vertical}
+
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:4px;background:var(--green-pale);color:var(--text-soft);border:1.5px solid var(--green-border);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;user-select:none;transition:all .12s}
+.pill:hover{border-color:var(--green);color:var(--green)}
+.pill.on{background:var(--green);color:#fff;border-color:var(--green)}
+.pill-autre{border:1.5px solid var(--green-border);border-radius:8px;padding:5px 10px;font-size:13px;outline:none;width:130px;background:var(--green-pale);font-family:inherit;display:none}
+.pill-autre.show{display:inline-block}
+.pill-del{display:inline-block;margin-left:3px;opacity:.45;font-size:13px;line-height:1;cursor:pointer;font-weight:700;vertical-align:middle}
+.pill-del:hover{opacity:1;color:var(--red)}
+
+/* NIVEAUX CECRL */
+.niv-wrapper{display:flex;gap:4px;align-items:flex-end;flex-wrap:wrap;padding-bottom:4px}
+.niv-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;min-width:46px}
+.niv-header{font-size:13px;font-weight:800;color:#fff;border-radius:8px;padding:7px 6px;text-align:center;cursor:pointer;user-select:none;transition:all .15s;width:46px;line-height:1;box-shadow:0 3px 8px rgba(0,0,0,.18)}
+.niv-header:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,0,0,.24)}
+.niv-header.on{outline:3px solid rgba(0,0,0,.25);transform:translateY(-2px)}
+.niv-sub{font-size:10px;font-weight:700;color:#fff;border-radius:5px;padding:3px 4px;text-align:center;cursor:pointer;user-select:none;transition:all .12s;width:38px;opacity:.6}
+.niv-sub:hover{opacity:1;transform:scale(1.06)}
+.niv-sub.on{opacity:1;outline:2px solid rgba(0,0,0,.25)}
+.nc-a1{background:#b06cde}.nc-a2{background:#38b6ef}.nc-b1{background:#4caf50}.nc-b2{background:#f44c5a}.nc-c1{background:#f07820}.nc-c2{background:#f5c000}
+.niv-hors{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--green-border)}
+.niv-hors-lbl{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;width:100%;margin-bottom:2px}
+.niv-hors-cell{background:var(--green-pale);border:1.5px solid var(--green-border);border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;transition:all .12s;color:var(--text-soft)}
+.niv-hors-cell:hover{border-color:var(--green);color:var(--green)}
+.niv-hors-cell.on{background:var(--green-dark);color:#fff;border-color:var(--green-dark)}
+
+
+/* CALENDAR */
+.cal-wrap{overflow-x:auto}
+.cal{border-collapse:collapse;font-size:11px;table-layout:fixed;width:100%}
+.cal th{background:var(--green);color:#fff;padding:6px 4px;text-align:center;font-weight:700;font-size:11px;white-space:nowrap}
+.cal th:first-child{background:var(--green-dark);width:44px;min-width:44px}
+.cal td{border:1px solid var(--green-border);padding:0;vertical-align:top;width:calc((100% - 44px)/6)}
+.cal td:first-child{background:var(--green-pale);font-weight:700;font-size:10px;color:var(--text-soft);padding:3px 5px;text-align:right;white-space:nowrap;vertical-align:top;line-height:1.3}
+.cal tr.hour-mark td:first-child{color:var(--green-dark);font-weight:800}
+.cal tr.hour-mark td{border-top:2px solid #e8a050}
+/* Slot cell — spans 2 rows visually via JS rowSpan */
+.ts{display:block;width:100%;min-height:38px;cursor:pointer;transition:background .12s;user-select:none;position:relative;padding:3px 5px;box-sizing:border-box;border-left:3px solid transparent}
+.ts:hover{background:var(--green-light)}
+.ts.on{border-left:3px solid var(--green)}
+.ts.empty-row{min-height:18px;background:transparent;cursor:default;border-left:3px solid transparent}
+.ts.empty-row:hover{background:rgba(184,76,10,.03)}
+.ts-inner{display:flex;flex-direction:column;gap:2px}
+.ts-benv{font-size:10px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:3px;padding:1px 4px;display:inline-block;max-width:100%}
+.ts-lieu{font-size:9px;color:var(--text-soft);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic;padding:0 2px}
+.ts-empty{font-size:9px;color:var(--text-muted);line-height:1.2;margin-top:2px}
+/* Bénévole colors — 8 distinct warm+cool palette */
+.bc-0{background:#fde8c8;color:#8a3a00}
+.bc-1{background:#c8e8fd;color:#004a8a}
+.bc-2{background:#d8f5d0;color:#1a5a00}
+.bc-3{background:#f5d0e8;color:#7a0050}
+.bc-4{background:#e8d0f5;color:#4a0080}
+.bc-5{background:#d0f5f0;color:#006050}
+.bc-6{background:#f5f0c8;color:#5a4a00}
+.bc-7{background:#f5c8c8;color:#800000}
+/* Slot modal */
+.slot-modal-bg{position:fixed;inset:0;background:rgba(42,26,10,.35);z-index:1000;display:flex;align-items:center;justify-content:center}
+.slot-modal{background:#fffaf5;border-radius:16px;padding:22px 24px;width:360px;max-width:95vw;box-shadow:0 12px 48px rgba(184,76,10,.22);border:1.5px solid var(--green-border)}
+.slot-modal h3{font-size:15px;font-weight:800;color:var(--green-dark);margin-bottom:4px}
+.slot-modal .slot-sub{font-size:12px;color:var(--text-soft);margin-bottom:16px}
+.slot-section{margin-bottom:14px}
+.slot-section-lbl{font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.slot-chips{display:flex;flex-wrap:wrap;gap:5px}
+.slot-chip{display:inline-flex;align-items:center;gap:3px;background:var(--green-pale);color:var(--text-soft);border:1.5px solid var(--green-border);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;user-select:none;transition:all .12s}
+.slot-chip:hover{border-color:var(--green);color:var(--green)}
+.slot-chip.on{color:#fff;border-color:transparent}
+.slot-modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+
+/* SIT ADM */
+.sadm-group{margin-bottom:10px}
+.sadm-gtitle{font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;padding-left:2px}
+.sadm-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:7px;cursor:pointer;transition:background .12s;margin-bottom:2px;border:1.5px solid transparent;flex-wrap:wrap}
+.sadm-item:hover{background:var(--green-light)}
+.sadm-item.on{background:var(--amber-light);border-color:#f0c060}
+.sadm-chk{width:15px;height:15px;border-radius:3px;border:2px solid var(--green-border);background:var(--green-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700}
+.sadm-item.on .sadm-chk{background:var(--amber);border-color:var(--amber);color:#fff}
+.sadm-lbl{font-size:12px;font-weight:600;flex:1}
+.sadm-desc{display:none}
+.sadm-date{display:none;align-items:center;gap:5px;width:100%;padding-left:23px;margin-top:2px}
+.sadm-item.on .sadm-date{display:flex}
+.sadm-date label{font-size:10px;font-weight:700;color:var(--amber);white-space:nowrap}
+.sadm-date input{border:1.5px solid #e8a050;border-radius:5px;padding:3px 7px;font-size:11px;background:#fffaf0;outline:none;font-family:inherit;cursor:pointer}
+
+/* TOGGLE */
+.tgl{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:var(--green-pale);color:var(--text-soft);border:1.5px solid var(--green-border);border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;user-select:none;transition:all .15s;align-self:flex-start}
+.tgl.on{background:var(--green);color:#fff;border-color:var(--green)}
+/* STATS PANEL */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:14px}
+.stat-block{background:var(--green-pale);border:1.5px solid var(--green-border);border-radius:10px;padding:12px 14px}
+.stat-block-title{font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--green-border);font-size:12px}
+.stat-row:last-child{border-bottom:none}
+.stat-row-lbl{color:var(--text-soft);font-weight:500}
+.stat-row-val{font-weight:800;color:var(--green-dark);font-family:'DM Mono',monospace}
+.stat-bar{height:5px;background:var(--green-border);border-radius:3px;margin-top:3px;overflow:hidden}
+.stat-bar-fill{height:100%;background:var(--green);border-radius:3px;transition:width .4s}
+/* SORTABLE TABLE */
+.rtable th{cursor:pointer;user-select:none;white-space:nowrap;position:relative;padding-right:18px!important}
+.rtable th:hover{background:var(--green-dark)}
+.rtable th .sort-ico{position:absolute;right:5px;top:50%;transform:translateY(-50%);font-size:10px;opacity:.5}
+.rtable th.sort-asc .sort-ico::after{content:'▲'}
+.rtable th.sort-desc .sort-ico::after{content:'▼'}
+
+
+/* BÉNÉVOLES */
+.benv-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.benv-tag{display:inline-flex;align-items:center;gap:6px;background:#fef3e2;border:1.5px solid #f0c060;color:#8a5200;border-radius:20px;padding:4px 12px;font-size:13px;font-weight:600;cursor:pointer;user-select:none;transition:all .12s}
+.benv-tag.on{background:#c47d00;color:#fff;border-color:#c47d00}
+.benv-tag .del{opacity:.5;font-size:12px;cursor:pointer}
+.benv-tag .del:hover{opacity:1}
+.add-benv{display:flex;gap:8px;margin-top:4px}
+
+/* BUTTONS */
+.btn{border:none;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:linear-gradient(135deg,#b84c0a,#d4621a);color:#fff;box-shadow:0 4px 14px rgba(184,76,10,.32)}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-primary:disabled{background:var(--green-border);box-shadow:none;cursor:not-allowed;transform:none}
+.btn-secondary{background:var(--green-pale);color:var(--green);border:1.5px solid var(--green-border)}
+.btn-secondary:hover{background:var(--green-light)}
+.btn-danger{background:var(--red-light);color:var(--red);border:1.5px solid #f0b0a8}
+.btn-export{background:linear-gradient(135deg,#7a4a00,#a86010);color:#fff;box-shadow:0 4px 14px rgba(122,74,0,.25)}
+.btn-export2{background:linear-gradient(135deg,#6b2196,#8b3ab3);color:#fff;box-shadow:0 4px 14px rgba(107,33,150,.25)}
+
+/* TABLE */
+.rtable{width:100%;border-collapse:collapse;font-size:13px}
+.rtable th{background:var(--green-dark);color:#fff;padding:9px 11px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.rtable td{padding:9px 11px;border-bottom:1px solid var(--green-border);vertical-align:top}
+.rtable tr:nth-child(even) td{background:var(--green-pale)}
+.rtable tr:hover td{background:var(--green-light)}
+.tag-list{display:flex;flex-wrap:wrap;gap:3px}
+.tag{display:inline-block;background:var(--green-light);color:var(--green);border-radius:12px;padding:1px 8px;font-size:11px;font-weight:600}
+.tag-amber{background:var(--amber-light);color:var(--amber)}
+
+/* FIELD TOGGLES */
+.ftg-grid{display:flex;flex-wrap:wrap;gap:8px}
+.ftg{display:inline-flex;align-items:center;gap:5px;background:var(--green-light);color:var(--green);border:1.5px solid var(--green-border);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;user-select:none;transition:all .12s}
+.ftg.off{background:#f0f0f0;color:#aaa;border-color:#ddd}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--green);color:#fff;border-radius:10px;padding:12px 20px;font-weight:700;font-size:14px;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transform:translateY(12px);transition:all .3s;z-index:9999}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 20px;color:var(--text-muted)}
+.empty .ico{font-size:48px;margin-bottom:12px}
+
+@media(max-width:680px){.sidebar{display:none}.main{padding:14px}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <h1>📋 CRIA</h1>
+    <p>Fiches Bilan &amp; Orientations</p>
+  </div>
+  <div class="sb-annee">
+    <label>Année</label>
+    <input class="annee-inp" type="number" id="annee" value="2026" oninput="setAnnee(this.value)">
+  </div>
+  <div class="sb-section" style="padding-top:18px">
+    <div class="sb-sec-title">Navigation</div>
+    <button class="nav-btn active" onclick="showView('form',this)"><span class="ico">✏️</span> Nouvelle fiche</button>
+    <button class="nav-btn" onclick="showView('list',this)"><span class="ico">📂</span> Toutes les fiches</button>
+    <button class="nav-btn" onclick="showView('settings',this)"><span class="ico">⚙️</span> Paramètres</button>
+  </div>
+  <div class="sb-stats">
+    <div class="stat-b"><div class="num" id="stat-tot">0</div><div class="lbl">Apprenants enregistrés</div></div>
+    <div class="stat-b"><div class="num" id="stat-yr">0</div><div class="lbl" id="stat-yr-lbl">Fiches 2026</div></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══ FORMULAIRE ═══════════════════════════════════════════════ -->
+<div class="view active" id="view-form">
+  <div class="pg-title">Nouvelle fiche apprenant</div>
+  <div class="pg-sub" id="form-sub">Bilans et orientations 2026</div>
+
+  <!-- Identité -->
+  <div class="card">
+    <div class="card-title"><span class="ico">👤</span> Identité</div>
+    <div class="g3" style="margin-bottom:13px">
+      <div class="field">
+        <label class="lbl">Genre</label>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <span class="pill" data-g="genre" data-v="M" onclick="radio(this)">M</span>
+          <span class="pill" data-g="genre" data-v="F" onclick="radio(this)">F</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="lbl">Nom *</label>
+        <input class="inp" id="f-nom" placeholder="NOM" style="text-transform:uppercase" oninput="checkBtn()">
+      </div>
+      <div class="field">
+        <label class="lbl">Prénom *</label>
+        <input class="inp" id="f-prenom" placeholder="Prénom" oninput="checkBtn()">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field">
+        <label class="lbl">Date du bilan</label>
+        <input class="inp" type="date" id="f-date">
+      </div>
+      <div class="field">
+        <label class="lbl">Téléphone</label>
+        <input class="inp" type="tel" id="f-tel" placeholder="06 XX XX XX XX">
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="field">
+        <label class="lbl">Email</label>
+        <input class="inp" type="email" id="f-mail" placeholder="adresse@mail.com">
+      </div>
+    </div>
+    <div class="g2" style="margin-top:12px">
+      <div class="field">
+        <label class="lbl">Date d'arrivée en France</label>
+        <input class="inp" type="date" id="f-arrivee">
+      </div>
+      <div class="field">
+        <label class="lbl">Nationalité</label>
+        <input class="inp" id="f-nationalite" placeholder="ex : Syrienne, Malienne…">
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="field">
+        <label class="lbl">Remarques</label>
+        <textarea class="inp" id="f-remarque" rows="2" placeholder="Notes libres sur l'apprenant…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Situation administrative -->
+  <div class="card" id="card-sitadm">
+    <div class="card-title"><span class="ico">📄</span> Situation administrative</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px">
+      <div class="sadm-group">
+        <div class="sadm-gtitle">🔵 Titres de séjour</div>
+        <div class="sadm-item" data-g="sitadm" data-v="Carte de résident (10 ans)" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Résident (10 ans)</div><div class="sadm-date"><label>📅</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Carte pluriannuelle (2–4 ans)" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Pluriannuelle (2–4 ans)</div><div class="sadm-date"><label>📅</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Carte temporaire (1 an)" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Temporaire (1 an)</div><div class="sadm-date"><label>📅</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Récépissé de renouvellement" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Récépissé</div><div class="sadm-date"><label>📅</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Convocation préfecture" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Convoc. préfecture</div><div class="sadm-date"><label>📅 RDV</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Visa long séjour (VLS-TS)" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">VLS-TS</div><div class="sadm-date"><label>📅</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+      </div>
+      <div class="sadm-group">
+        <div class="sadm-gtitle">🟡 Protection internationale</div>
+        <div class="sadm-item" data-g="sitadm" data-v="Réfugié reconnu (OFPRA)" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Réfugié (OFPRA)</div><div class="sadm-date"><label>📅</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Protection subsidiaire" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Prot. subsidiaire</div><div class="sadm-date"><label>📅</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Apatride reconnu" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Apatride reconnu</div><div class="sadm-date"><label>📅</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Demandeur d'asile (OFPRA en cours)" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Demandeur d'asile</div><div class="sadm-date"><label>📅 Attestation</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Débouté – recours CNDA" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Débouté – CNDA</div><div class="sadm-date"><label>📅 Recours</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Débouté définitif" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Débouté définitif</div></div>
+      </div>
+      <div class="sadm-group">
+        <div class="sadm-gtitle">🟠 Situations particulières</div>
+        <div class="sadm-item" data-g="sitadm" data-v="Sans titre de séjour" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Sans titre de séjour</div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Ressortissant UE / EEE / Suisse" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">UE / EEE / Suisse</div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Mineur non accompagné (MNA)" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">MNA</div><div class="sadm-date"><label>📅</label><input type="date" onclick="event.stopPropagation()" class="sadm-expiry"></div></div>
+        <div class="sadm-item" data-g="sitadm" data-v="Citoyen(ne) français(e)" onclick="multiItem(this)"><div class="sadm-chk"></div><div class="sadm-lbl">Citoyen français</div></div>
+      </div>
+    </div>
+    <div class="field" style="margin-top:8px">
+      <label class="lbl">Notes administratives</label>
+      <textarea class="inp" id="f-sadm-note" rows="2" placeholder="Démarches en cours, numéro de dossier…"></textarea>
+    </div>
+  </div>
+
+  <!-- Adresse -->
+  <div class="card" id="card-adresse">
+    <div class="card-title"><span class="ico">📍</span> Adresse</div>
+    <div class="g2">
+      <div class="field"><label class="lbl">Adresse</label><input class="inp" id="f-adresse" placeholder="Rue, résidence…"></div>
+      <div class="field"><label class="lbl">Ville</label><input class="inp" id="f-ville" value="Châteauroux"></div>
+    </div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;font-size:13px;font-weight:700;color:var(--text-soft)">
+        <input type="checkbox" id="f-qpv" style="width:16px;height:16px;accent-color:var(--green);cursor:pointer">
+        <span>QPV</span>
+        <span style="font-size:11px;font-weight:400;color:var(--text-muted)">(Quartier Prioritaire de la Ville)</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Niveaux -->
+  <div class="card">
+    <div class="card-title"><span class="ico">🎯</span> Niveau(x) CECRL — cliquez pour sélectionner</div>
+    <div class="niv-wrapper" id="niv-wrapper">
+      <!-- colonnes générées en JS -->
+    </div>
+    <div class="niv-hors">
+      <div class="niv-hors-lbl">Hors CECRL</div>
+      <div class="niv-hors-cell" data-v="Alpha" onclick="this.classList.toggle('on')">Alpha</div>
+      <div class="niv-hors-cell" data-v="Alpha-FLE" onclick="this.classList.toggle('on')">Alpha-FLE</div>
+      <div class="niv-hors-cell" data-v="Illettrisme" onclick="this.classList.toggle('on')">Illettrisme</div>
+      <div class="niv-hors-cell" data-v="Illettrisme +" onclick="this.classList.toggle('on')">Illettrisme +</div>
+    </div>
+    <div style="margin-top:13px">
+      <div class="field">
+        <label class="lbl">Besoins prioritaires</label>
+        <div class="pills" id="pills-besoins"></div>
+        <div class="add-benv" style="margin-top:6px">
+          <input class="inp" id="new-besoins" placeholder="Ajouter un besoin…" style="max-width:200px" onkeydown="if(event.key==='Enter')addPillItem('besoins')">
+          <button class="btn btn-secondary" onclick="addPillItem('besoins')">+ Ajouter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orientation -->
+  <div class="card" id="card-orientation">
+    <div class="card-title"><span class="ico">🧭</span> Orientation</div>
+    <div class="pills" id="pills-orientation"></div>
+    <div class="add-benv" style="margin-top:8px">
+      <input class="inp" id="new-orientation" placeholder="Ajouter une orientation…" style="max-width:210px" onkeydown="if(event.key==='Enter')addPillItem('orientation')">
+      <button class="btn btn-secondary" onclick="addPillItem('orientation')">+ Ajouter</button>
+    </div>
+  </div>
+
+  <!-- Ateliers -->
+  <div class="card" id="card-atelier">
+    <div class="card-title"><span class="ico">🗓</span> Planning des ateliers — cliquez un créneau pour l'assigner</div>
+    <div class="cal-wrap">
+      <table class="cal"><thead><tr>
+        <th>Horaire</th><th>Lun</th><th>Mar</th><th>Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th>
+      </tr></thead><tbody id="cal-body"></tbody></table>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:var(--text-muted)">Cliquez un créneau libre pour l'activer · Cliquez un créneau actif pour le modifier · Shift+clic pour effacer</div>
+  </div>
+
+  <!-- Modal créneau -->
+  <div class="slot-modal-bg" id="slot-modal-bg" style="display:none" onclick="if(event.target===this)closeSlotModal(false)">
+    <div class="slot-modal">
+      <h3 id="slot-modal-title">Créneau</h3>
+      <div class="slot-sub" id="slot-modal-sub"></div>
+      <div class="slot-section">
+        <div class="slot-section-lbl">🤝 Bénévole(s)</div>
+        <div class="slot-chips" id="slot-chips-benv"></div>
+      </div>
+      <div class="slot-section">
+        <div class="slot-section-lbl">🏫 Lieu(x)</div>
+        <div class="slot-chips" id="slot-chips-lieu"></div>
+      </div>
+      <div class="slot-modal-btns">
+        <button class="btn btn-danger" style="padding:7px 14px;font-size:12px" onclick="closeSlotModal(true,true)">🗑 Effacer</button>
+        <button class="btn btn-secondary" style="padding:7px 14px;font-size:12px" onclick="closeSlotModal(false)">Annuler</button>
+        <button class="btn btn-primary" style="padding:7px 14px;font-size:12px" onclick="closeSlotModal(true)">✓ Valider</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Suivi péda -->
+  <div class="card" id="card-apprenant">
+    <div class="card-title"><span class="ico">🎓</span> Suivi pédagogique</div>
+    <div class="field" style="margin-bottom:14px">
+      <label class="lbl">Statut apprenant</label>
+      <span class="tgl" id="tgl-apprenant" onclick="toggleTgl(this)">Pas encore apprenant</span>
+    </div>
+
+    <div class="card-title" style="margin-top:4px;margin-bottom:10px"><span class="ico">📝</span> Projet d'examen</div>
+    <!-- Type examen -->
+    <div class="field" style="margin-bottom:12px">
+      <label class="lbl">Type d'examen</label>
+      <div class="pills">
+        <span class="pill" data-g="examtype" data-v="DELF" onclick="radio(this);showExamLevels('DELF')">DELF</span>
+        <span class="pill" data-g="examtype" data-v="TCF" onclick="radio(this);showExamLevels('TCF')">TCF</span>
+        <span class="pill" data-g="examtype" data-v="Aucun" onclick="radio(this);showExamLevels('none')">Aucun pour l'instant</span>
+      </div>
+    </div>
+    <!-- Niveaux DELF -->
+    <div id="exam-levels-DELF" style="display:none;margin-bottom:12px">
+      <div class="field">
+        <label class="lbl">Niveau DELF visé</label>
+        <div class="pills">
+          <span class="pill" data-g="examlevel" data-v="DELF A1" onclick="radio(this)">A1</span>
+          <span class="pill" data-g="examlevel" data-v="DELF A2" onclick="radio(this)">A2</span>
+          <span class="pill" data-g="examlevel" data-v="DELF B1" onclick="radio(this)">B1</span>
+          <span class="pill" data-g="examlevel" data-v="DELF B2" onclick="radio(this)">B2</span>
+          <span class="pill" data-g="examlevel" data-v="DALF C1" onclick="radio(this)">C1 (DALF)</span>
+          <span class="pill" data-g="examlevel" data-v="DALF C2" onclick="radio(this)">C2 (DALF)</span>
+        </div>
+      </div>
+    </div>
+    <!-- Niveaux TCF -->
+    <div id="exam-levels-TCF" style="display:none;margin-bottom:12px">
+      <div class="field">
+        <label class="lbl">Niveau TCF visé</label>
+        <div class="pills">
+          <span class="pill" data-g="examlevel" data-v="TCF A1" onclick="radio(this)">A1</span>
+          <span class="pill" data-g="examlevel" data-v="TCF A2" onclick="radio(this)">A2</span>
+          <span class="pill" data-g="examlevel" data-v="TCF B1" onclick="radio(this)">B1</span>
+          <span class="pill" data-g="examlevel" data-v="TCF B2" onclick="radio(this)">B2</span>
+          <span class="pill" data-g="examlevel" data-v="TCF C1" onclick="radio(this)">C1</span>
+          <span class="pill" data-g="examlevel" data-v="TCF C2" onclick="radio(this)">C2</span>
+        </div>
+      </div>
+    </div>
+    <!-- Date passage -->
+    <div id="exam-date-row" style="display:none">
+      <div class="field">
+        <label class="lbl">Date de passage prévue</label>
+        <input class="inp" type="date" id="f-exam-date" style="max-width:220px">
+      </div>
+    </div>
+  </div>
+
+  <!-- Prescripteur -->
+  <div class="card" id="card-prescripteur">
+    <div class="card-title"><span class="ico">🏢</span> Prescripteur</div>
+    <div class="pills" id="pills-prescripteur" style="margin-bottom:8px"></div>
+    <div class="add-benv" style="margin-bottom:11px">
+      <input class="inp" id="new-prescripteur" placeholder="Ajouter un prescripteur…" style="max-width:210px" onkeydown="if(event.key==='Enter')addPillItem('prescripteur')">
+      <button class="btn btn-secondary" onclick="addPillItem('prescripteur')">+ Ajouter</button>
+    </div>
+    <div class="field">
+      <label class="lbl">Contact prescripteur</label>
+      <input class="inp" id="f-contact-presc" placeholder="Nom, téléphone ou email du référent">
+    </div>
+  </div>
+
+  <!-- Bandeau mode édition -->
+  <div id="edit-banner" style="display:none;background:#fff3e0;border:1.5px solid #f0a040;border-radius:10px;padding:10px 16px;margin-bottom:14px;align-items:center;justify-content:space-between;gap:10px">
+    <span style="font-size:13px;font-weight:700;color:#a05000">✏️ Modification d'une fiche existante</span>
+    <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px" onclick="cancelEdit()">✕ Annuler</button>
+  </div>
+
+  <div style="display:flex;gap:12px;align-items:center;margin-bottom:40px;flex-wrap:wrap">
+    <button class="btn btn-primary" id="btn-add" onclick="saveRecord()" disabled>➕ Enregistrer cette fiche</button>
+    <button class="btn btn-secondary" onclick="resetForm()">↺ Réinitialiser</button>
+  </div>
+</div>
+
+<!-- ═══ LISTE ════════════════════════════════════════════════════ -->
+<div class="view" id="view-list">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+    <div>
+      <div class="pg-title">Toutes les fiches</div>
+      <div class="pg-sub" id="list-sub">0 apprenant(s)</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-export" onclick="exportXLS()">⬇️ Export Excel (.xls)</button>
+      <button class="btn btn-export" onclick="exportCSV()" style="background:linear-gradient(135deg,#4a7a00,#6aaa10)">⬇️ Export CSV</button>
+      <button class="btn btn-export2" onclick="exportJSON()">💾 Sauvegarde JSON</button>
+      <label class="btn btn-secondary" style="cursor:pointer">📂 Importer JSON<input type="file" accept=".json" style="display:none" onchange="importJSON(this)"></label>
+    </div>
+  </div>
+
+  <!-- Statistiques -->
+  <div id="stats-panel" style="display:none;margin-bottom:22px">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="ico">📊</span> Statistiques — <span id="stats-annee-lbl"></span></div>
+      <div class="stats-grid" id="stats-grid"></div>
+    </div>
+  </div>
+
+  <!-- Barre de recherche + toggle stats -->
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+    <input class="inp" id="list-search" placeholder="🔍 Rechercher (nom, prénom, nationalité…)" style="flex:1;min-width:200px" oninput="renderRecords()">
+    <button class="btn btn-secondary" id="btn-stats-toggle" onclick="toggleStats()" style="white-space:nowrap">📊 Afficher les stats</button>
+  </div>
+
+  <div id="records-container">
+    <div class="empty"><div class="ico">📋</div><p>Aucune fiche enregistrée.<br>Commencez par créer une nouvelle fiche.</p></div>
+  </div>
+</div>
+
+<!-- ═══ PARAMÈTRES ═══════════════════════════════════════════════ -->
+<div class="view" id="view-settings">
+  <div class="pg-title">Paramètres</div>
+  <div class="pg-sub">Personnalisez le formulaire</div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">👁</span> Rubriques visibles</div>
+    <div class="ftg-grid" id="ftg-grid"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🤝</span> Gestion des bénévoles</div>
+    <div class="benv-list" id="benv-manage"></div>
+    <div class="add-benv">
+      <input class="inp" id="new-benv2" placeholder="Ajouter un bénévole…" style="max-width:210px" onkeydown="if(event.key==='Enter')addBenv2()">
+      <button class="btn btn-secondary" onclick="addBenv2()">+ Ajouter</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🏫</span> Gestion des lieux</div>
+    <div class="benv-list" id="lieu-manage"></div>
+    <div class="add-benv">
+      <input class="inp" id="new-lieu2" placeholder="Ajouter un lieu…" style="max-width:210px" onkeydown="if(event.key==='Enter')addLieu2()">
+      <button class="btn btn-secondary" onclick="addLieu2()">+ Ajouter</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🗑</span> Données</div>
+    <p style="font-size:13px;color:var(--text-soft);margin-bottom:12px">Les données sont stockées localement dans votre navigateur. Exportez régulièrement en JSON pour sauvegarder.</p>
+    <button class="btn btn-danger" onclick="clearAll()">🗑 Effacer toutes les fiches</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ STATE ═══════════════════════════════════════════════════════
+let records = [];
+let benevoles = JSON.parse(localStorage.getItem('cria_benv')||'["Claudine","Laurence","Fatie","Sabine"]');
+let hiddenFields = JSON.parse(localStorage.getItem('cria_hidden')||'[]');
+let annee = localStorage.getItem('cria_annee')||'2026';
+
+// Listes dynamiques persistantes
+const PILL_DEFAULTS = {
+  orientation: ['CRIA','CCAS','DFL','Mob d\'emploi','Soli Ac','France Travail'],
+  besoins:     ['✍️ Écrit','🗣 Oral','🔊 Phonologie'],
+  lieu:        ['Centre social Saint Jean','Centre social Beaulieu','Centre social Vaugirard','CRIA'],
+  prescripteur:['CCAS','Soli Ac','Mob d\'emploi','France Travail','CADA','CAF','Hôpital','Réseau social'],
+};
+const PILL_MULTI = {orientation:false, besoins:true, lieu:false, prescripteur:true};
+
+let pillLists = {};
+Object.keys(PILL_DEFAULTS).forEach(g=>{
+  pillLists[g] = JSON.parse(localStorage.getItem('cria_pills_'+g)||JSON.stringify(PILL_DEFAULTS[g]));
+});
+
+const FIELD_CARDS = [
+  {id:'adresse',label:'Adresse / Ville',card:'card-adresse'},
+  {id:'orientation',label:'Orientation',card:'card-orientation'},
+  {id:'atelier',label:'Ateliers & Dispo',card:'card-atelier'},
+  {id:'benevole',label:'Bénévole',card:'card-benevole'},
+  {id:'apprenant',label:'Suivi pédagogique',card:'card-apprenant'},
+  {id:'sitadm',label:'Situation administrative',card:'card-sitadm'},
+  {id:'prescripteur',label:'Prescripteur',card:'card-prescripteur'},
+];
+
+const JOURS = ['Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+// ══ INIT ════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('annee').value = annee;
+  setAnnee(annee,false);
+  buildNiv();
+  buildCal();
+  renderBenv();
+  Object.keys(PILL_DEFAULTS).forEach(g=>renderPills(g));
+  renderFtg();
+  applyHidden();
+  updateStats();
+});
+
+// ══ ANNEE ════════════════════════════════════════════════════════
+function setAnnee(v,save=true){
+  annee=v;
+  if(save) localStorage.setItem('cria_annee',v);
+  document.getElementById('form-sub').textContent='Bilans et orientations '+v;
+  document.getElementById('stat-yr-lbl').textContent='Fiches '+v;
+  updateStats();
+}
+
+// ══ VIEWS ════════════════════════════════════════════════════════
+function showView(n,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+n).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(n==='list') renderRecords();
+  if(n==='settings'){renderBenv();renderLieu();renderFtg();}
+}
+
+// ══ PILL HELPERS ════════════════════════════════════════════════
+function radio(el){
+  document.querySelectorAll(`.pill[data-g="${el.dataset.g}"]`).forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  // handle autre visibility
+  const aid=el.dataset.g+'-autre';
+  const ai=document.getElementById(aid);
+  if(ai) ai.classList.toggle('show',el.dataset.v==='__autre__');
+}
+function multi(el){el.classList.toggle('on');}
+function toggleAutre(el,id){
+  const i=document.getElementById(id);
+  if(i) i.classList.toggle('show',el.classList.contains('on'));
+}
+function multiItem(el){
+  el.classList.toggle('on');
+  el.querySelector('.sadm-chk').textContent=el.classList.contains('on')?'✓':'';
+}
+function toggleTgl(el){
+  el.classList.toggle('on');
+  el.textContent=el.classList.contains('on')?'✓ Apprenant':'Pas encore apprenant';
+}
+
+// ── Exam levels visibility
+function showExamLevels(type){
+  ['DELF','TCF'].forEach(t=>{
+    const el=document.getElementById('exam-levels-'+t);
+    if(el) el.style.display=(type===t)?'block':'none';
+  });
+  const dr=document.getElementById('exam-date-row');
+  if(dr) dr.style.display=(type==='none')?'none':'block';
+  // clear level pills of other type
+  document.querySelectorAll('.pill[data-g="examlevel"]').forEach(p=>p.classList.remove('on'));
+}
+
+// ══ NIVEAUX CECRL ═══════════════════════════════════════════════
+const NIV_LEVELS = [
+  {id:'A1', cls:'nc-a1', subs:true},
+  {id:'A2', cls:'nc-a2', subs:true},
+  {id:'B1', cls:'nc-b1', subs:true},
+  {id:'B2', cls:'nc-b2', subs:true},
+  {id:'C1', cls:'nc-c1', subs:true},
+  {id:'C2', cls:'nc-c2', subs:true},
+];
+const NIV_DIMS = ['Oral','Écrit'];
+
+function buildNiv(){
+  const wrap=document.getElementById('niv-wrapper');
+  if(!wrap)return;
+  wrap.innerHTML='';
+
+  NIV_DIMS.forEach(dim=>{
+    // Dimension label column
+    const dimCol=document.createElement('div');
+    dimCol.className='niv-col';
+    dimCol.style.cssText='justify-content:center;min-width:36px;gap:0';
+    const dimLbl=document.createElement('div');
+    dimLbl.style.cssText='writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;padding:4px 0';
+    dimLbl.textContent=dim;
+    dimCol.appendChild(dimLbl);
+    wrap.appendChild(dimCol);
+
+    NIV_LEVELS.forEach(lv=>{
+      const col=document.createElement('div');
+      col.className='niv-col';
+
+      // + sub
+      const sp=document.createElement('div');
+      sp.className=`niv-sub ${lv.cls}`;
+      sp.dataset.v=`${lv.id}+ ${dim}`;
+      sp.textContent='+';
+      sp.title=`${lv.id}+ ${dim}`;
+      sp.onclick=()=>sp.classList.toggle('on');
+
+      // Main header
+      const hdr=document.createElement('div');
+      hdr.className=`niv-header ${lv.cls}`;
+      hdr.dataset.v=`${lv.id} ${dim}`;
+      hdr.innerHTML=`${lv.id}<br><span style="font-size:8px;font-weight:600;opacity:.85">${dim==='Oral'?'🗣':'✍️'}</span>`;
+      hdr.title=`${lv.id} ${dim}`;
+      hdr.onclick=()=>hdr.classList.toggle('on');
+
+      // − sub
+      const sm=document.createElement('div');
+      sm.className=`niv-sub ${lv.cls}`;
+      sm.dataset.v=`${lv.id}- ${dim}`;
+      sm.textContent='−';
+      sm.title=`${lv.id}− ${dim}`;
+      sm.onclick=()=>sm.classList.toggle('on');
+
+      col.appendChild(sp);
+      col.appendChild(hdr);
+      col.appendChild(sm);
+      wrap.appendChild(col);
+    });
+
+    // Spacer between oral and écrit rows
+    if(dim==='Oral'){
+      const spacer=document.createElement('div');
+      spacer.style.cssText='width:100%;height:10px;grid-column:1/-1;flex-basis:100%';
+      // we use a flex-wrap break
+      const br=document.createElement('div');
+      br.style.cssText='flex-basis:100%;height:10px;border-top:1.5px dashed var(--green-border);margin:6px 0';
+      wrap.appendChild(br);
+    }
+  });
+}
+
+function getNiv(){
+  const r=[];
+  document.querySelectorAll('.niv-header.on,.niv-sub.on,.niv-hors-cell.on').forEach(el=>r.push(el.dataset.v));
+  return r;
+}
+
+// ══ CALENDAR ════════════════════════════════════════════════════
+// slotData: { "Lun-9h00": {benevoles:[], lieux:[]}, ... }
+let slotData = {};
+
+// Hour labels 9h→19h (every 1h)
+const HEURES_LABELS = ['9h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h00','18h00','19h00'];
+// 2h slot start hours (clickable slots)
+const HEURES_2H = ['9h00','11h00','13h00','15h00','17h00'];
+const HEURES = ['9h00','9h30','10h00','10h30','11h00','11h30','12h00','12h30','13h00','13h30','14h00','14h30','15h00','15h30','16h00','16h30','17h00','17h30','18h00','18h30','19h00'];
+
+// Bénévole → color index (persistent mapping)
+let benvColorMap = JSON.parse(localStorage.getItem('cria_benv_colors')||'{}');
+const BENV_COLORS = ['bc-0','bc-1','bc-2','bc-3','bc-4','bc-5','bc-6','bc-7'];
+function getBenvColor(name){
+  if(benvColorMap[name]===undefined){
+    const used=Object.values(benvColorMap);
+    let idx=0;
+    while(used.includes(idx)&&idx<BENV_COLORS.length) idx++;
+    benvColorMap[name]=idx%BENV_COLORS.length;
+    localStorage.setItem('cria_benv_colors',JSON.stringify(benvColorMap));
+  }
+  return BENV_COLORS[benvColorMap[name]];
+}
+
+function buildCal(){
+  const tb=document.getElementById('cal-body');
+  tb.innerHTML='';
+
+  // One row per hour label 9h→19h (11 rows)
+  // Each day cell is independently clickable
+  HEURES_LABELS.forEach(h=>{
+    const tr=document.createElement('tr');
+    const isSlotStart = HEURES_2H.includes(h); // bold border on 2h boundaries
+    if(isSlotStart) tr.className='hour-mark';
+
+    // Time label cell
+    const tdH=document.createElement('td');
+    tdH.textContent=h;
+    tr.appendChild(tdH);
+
+    // One clickable cell per jour
+    JOURS.forEach(j=>{
+      const key=`${j}-${h}`;
+      const td=document.createElement('td');
+      td.innerHTML=`<div class="ts" data-key="${key}" onclick="clickSlot(event,'${key}')"><div class="ts-inner" id="ts-inner-${key}"></div></div>`;
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+  refreshAllSlots();
+}
+
+function refreshAllSlots(){
+  HEURES_LABELS.forEach(h=>{
+    JOURS.forEach(j=>refreshSlot(`${j}-${h}`));
+  });
+}
+
+function refreshSlot(key){
+  const inner=document.getElementById('ts-inner-'+key);
+  const cell=document.querySelector(`.ts[data-key="${key}"]`);
+  if(!inner||!cell)return;
+  const d=slotData[key];
+  if(d&&(d.benevoles.length||d.lieux.length)){
+    cell.classList.add('on');
+    inner.innerHTML='';
+    if(d.benevoles.length){
+      d.benevoles.forEach(b=>{
+        const span=document.createElement('div');
+        span.className='ts-benv '+getBenvColor(b);
+        span.textContent='🤝 '+b;
+        inner.appendChild(span);
+      });
+    }
+    if(d.lieux.length){
+      const l=document.createElement('div');
+      l.className='ts-lieu';
+      l.textContent='📍 '+d.lieux.map(x=>x.replace('Centre social ','').replace('centre social ','')).join(', ');
+      inner.appendChild(l);
+    }
+  } else {
+    cell.classList.remove('on');
+    inner.innerHTML='<div class="ts-empty">+ Assigner</div>';
+  }
+}
+
+// Modal state
+let _modalKey=null;
+let _modalBenv=[];
+let _modalLieux=[];
+
+function clickSlot(e,key){
+  if(e.shiftKey){clearSlot(key);return;}
+  openSlotModal(key);
+}
+
+function clearSlot(key){
+  delete slotData[key];
+  refreshSlot(key);
+}
+
+function openSlotModal(key){
+  _modalKey=key;
+  const d=slotData[key]||{benevoles:[],lieux:[]};
+  _modalBenv=[...d.benevoles];
+  _modalLieux=[...d.lieux];
+  const parts=key.split('-');
+  const j=parts[0], h=parts.slice(1).join('-');
+  const hIdx=HEURES_LABELS.indexOf(h);
+  const hEnd=HEURES_LABELS[hIdx+1]||'19h00';
+  document.getElementById('slot-modal-title').textContent=`${j} — ${h} → ${hEnd}`;
+  document.getElementById('slot-modal-sub').textContent='Sélectionnez le ou les bénévoles et lieux pour ce créneau';
+  // Benv chips with color preview
+  const bc=document.getElementById('slot-chips-benv');
+  bc.innerHTML='';
+  benevoles.forEach(b=>{
+    const c=document.createElement('span');
+    const cc=getBenvColor(b);
+    c.className='slot-chip '+cc+(_modalBenv.includes(b)?' on':'');
+    if(_modalBenv.includes(b)) c.classList.add('on');
+    c.textContent=b;
+    // Apply color when on
+    const applyColor=()=>{
+      if(c.classList.contains('on')){ c.classList.add(cc); }
+      else { c.classList.remove(cc); }
+    };
+    c.onclick=()=>{
+      c.classList.toggle('on');
+      applyColor();
+      if(c.classList.contains('on')) _modalBenv.push(b);
+      else _modalBenv=_modalBenv.filter(x=>x!==b);
+    };
+    bc.appendChild(c);
+  });
+  // Lieu chips
+  const lc=document.getElementById('slot-chips-lieu');
+  lc.innerHTML='';
+  pillLists['lieu'].forEach(l=>{
+    const c=document.createElement('span');
+    const lbl=l.replace('Centre social ','').replace('centre social ','');
+    c.className='slot-chip'+(_modalLieux.includes(l)?' on':'');
+    c.textContent=lbl; c.title=l;
+    c.onclick=()=>{
+      c.classList.toggle('on');
+      if(c.classList.contains('on')) _modalLieux.push(l);
+      else _modalLieux=_modalLieux.filter(x=>x!==l);
+    };
+    lc.appendChild(c);
+  });
+  document.getElementById('slot-modal-bg').style.display='flex';
+}
+
+function closeSlotModal(save,clear=false){
+  if(save){
+    if(clear){
+      delete slotData[_modalKey];
+    } else {
+      if(_modalBenv.length||_modalLieux.length){
+        slotData[_modalKey]={benevoles:[..._modalBenv],lieux:[..._modalLieux]};
+      } else {
+        delete slotData[_modalKey];
+      }
+    }
+    refreshSlot(_modalKey);
+  }
+  document.getElementById('slot-modal-bg').style.display='none';
+  _modalKey=null;
+}
+
+function getCal(){
+  return Object.entries(slotData).map(([k,v])=>({slot:k,benevoles:v.benevoles,lieux:v.lieux}));
+}
+
+function setCal(data){
+  slotData={};
+  if(!data)return;
+  if(Array.isArray(data)){
+    data.forEach(item=>{
+      if(typeof item==='string'){
+        const parts=item.split(' ');
+        if(parts.length===2){
+          const j=parts[0],h=parts[1];
+          // round to nearest hour in HEURES_LABELS
+          const roundH=HEURES_LABELS.find(hl=>hl===h)||HEURES_2H.find(hh=>{
+            const idx=HEURES.indexOf(hh);
+            return HEURES.slice(idx,idx+4).includes(h);
+          })||h;
+          const key=`${j}-${roundH}`;
+          if(!slotData[key]) slotData[key]={benevoles:[],lieux:[]};
+        }
+      } else if(item.slot){
+        slotData[item.slot]={benevoles:item.benevoles||[],lieux:item.lieux||[]};
+      }
+    });
+  }
+  refreshAllSlots();
+}
+
+// ══ BÉNÉVOLES ═══════════════════════════════════════════════════
+function saveBenv(){localStorage.setItem('cria_benv',JSON.stringify(benevoles));}
+function renderBenv(){
+  ['benv-select','benv-manage'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.innerHTML='';
+    const isSelect=id==='benv-select';
+    benevoles.forEach(b=>{
+      const s=document.createElement('span');
+      s.className='benv-tag';
+      if(isSelect){s.innerHTML=b;s.dataset.v=b;s.onclick=function(){this.classList.toggle('on');};}
+      else{s.innerHTML=`${b} <span class="del" onclick="removeBenv('${b}')">✕</span>`;}
+      el.appendChild(s);
+    });
+  });
+}
+function addBenv(){const i=document.getElementById('new-benv');const v=i.value.trim();if(!v||benevoles.includes(v))return;benevoles.push(v);saveBenv();i.value='';renderBenv();}
+function addBenv2(){const i=document.getElementById('new-benv2');const v=i.value.trim();if(!v||benevoles.includes(v))return;benevoles.push(v);saveBenv();i.value='';renderBenv();}
+function removeBenv(b){benevoles=benevoles.filter(x=>x!==b);saveBenv();renderBenv();}
+function getSelBenv(){return[...document.querySelectorAll('#benv-select .benv-tag.on')].map(t=>t.dataset.v);}
+
+// ══ LIEUX (gestion paramètres) ═══════════════════════════════════
+function renderLieu(){
+  const el=document.getElementById('lieu-manage');
+  if(!el)return;
+  el.innerHTML='';
+  pillLists['lieu'].forEach(l=>{
+    const s=document.createElement('span');
+    s.className='benv-tag';
+    const lbl=l.replace('Centre social ','');
+    s.innerHTML=`${lbl} <span class="del" title="${l}" onclick="removeLieu('${l.replace(/'/g,'\\\'')}')" >✕</span>`;
+    el.appendChild(s);
+  });
+}
+function addLieu2(){
+  const i=document.getElementById('new-lieu2');
+  const v=i.value.trim();
+  if(!v||pillLists['lieu'].includes(v))return;
+  pillLists['lieu'].push(v);
+  savePills('lieu');
+  i.value='';
+  renderPills('lieu');
+  renderLieu();
+}
+function removeLieu(v){
+  pillLists['lieu']=pillLists['lieu'].filter(x=>x!==v);
+  savePills('lieu');
+  renderPills('lieu');
+  renderLieu();
+}
+
+// ══ LISTES PILLS DYNAMIQUES ══════════════════════════════════════
+function savePills(g){localStorage.setItem('cria_pills_'+g,JSON.stringify(pillLists[g]));}
+
+function renderPills(g){
+  const container=document.getElementById('pills-'+g);
+  if(!container)return;
+  const isMulti=PILL_MULTI[g];
+  // remember selected values before re-render
+  const selected=[...container.querySelectorAll('.pill.on')].map(p=>p.dataset.v);
+  container.innerHTML='';
+  pillLists[g].forEach(v=>{
+    const el=document.createElement('span');
+    el.className='pill'+(selected.includes(v)?' on':'');
+    el.dataset.g=g; el.dataset.v=v;
+    // label: strip emoji prefix for display if needed — keep as-is
+    el.innerHTML=v+` <span class="pill-del" onclick="event.stopPropagation();removePillItem('${g}','${v.replace(/'/g,'\\\'')}')" title="Supprimer">×</span>`;
+    el.onclick=()=>{ if(isMulti) el.classList.toggle('on'); else{ container.querySelectorAll('.pill').forEach(p=>p.classList.remove('on')); el.classList.add('on'); } };
+    container.appendChild(el);
+  });
+}
+
+function addPillItem(g){
+  const inp=document.getElementById('new-'+g);
+  const v=inp.value.trim();
+  if(!v||pillLists[g].includes(v))return;
+  pillLists[g].push(v);
+  savePills(g);
+  inp.value='';
+  renderPills(g);
+  // also re-render settings if visible
+  renderPillSettings(g);
+}
+
+function removePillItem(g,v){
+  pillLists[g]=pillLists[g].filter(x=>x!==v);
+  savePills(g);
+  renderPills(g);
+  renderPillSettings(g);
+}
+
+function renderPillSettings(g){
+  // if settings view has a container for this group, refresh it
+  const c=document.getElementById('pills-settings-'+g);
+  if(c) renderPillsInContainer(g,c,true);
+}
+
+// ══ GET FORM VALUES ══════════════════════════════════════════════
+function getRadio(g){
+  const el=document.querySelector(`.pill.on[data-g="${g}"]`);
+  if(!el)return'';
+  return el.dataset.v;
+}
+function getMulti(g){
+  return[...document.querySelectorAll(`.pill.on[data-g="${g}"]`)].map(p=>p.dataset.v).filter(Boolean);
+}
+function getSitAdm(){
+  const result=[];
+  document.querySelectorAll('.sadm-item.on').forEach(i=>{
+    const expiry=i.querySelector('.sadm-expiry');
+    result.push({val:i.dataset.v, expiry:expiry?expiry.value:''});
+  });
+  return result;
+}
+function getLieu(){
+  const el=document.querySelector('.pill.on[data-g="lieu"]');
+  return el?el.dataset.v:'';
+}
+function getExam(){
+  const type=getRadio('examtype');
+  if(!type||type==='Aucun')return{type:'',level:'',date:''};
+  const level=getRadio('examlevel');
+  const date=document.getElementById('f-exam-date')?document.getElementById('f-exam-date').value:'';
+  return{type,level,date};
+}
+
+// ══ ADD / EDIT RECORD ════════════════════════════════════════════
+let editingId = null;
+
+function checkBtn(){
+  document.getElementById('btn-add').disabled=!(document.getElementById('f-nom').value.trim()&&document.getElementById('f-prenom').value.trim());
+}
+
+async function saveRecord() {
+  if(!checkBtn()) return;
+  const r = buildRecord();
+  if(editingId !== null) {
+    await fetch('/api/fiches/' + editingId, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(r)
+    });
+    cancelEdit();
+  } else {
+    await fetch('/api/fiches', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(r)
+    });
+  }
+  resetForm();
+  await loadRecords();
+}
+
+function editRecord(id){
+  const r=records.find(x=>x.id===id);
+  if(!r)return;
+  resetForm();
+  editingId=id;
+  loadFormFromRecord(r);
+  // Show banner & update button
+  const banner=document.getElementById('edit-banner');
+  banner.style.display='flex';
+  document.getElementById('btn-add').textContent='💾 Enregistrer les modifications';
+  document.getElementById('btn-add').disabled=false;
+  // Switch to form view — target the first nav-btn (Nouvelle fiche)
+  const navBtns=document.querySelectorAll('.nav-btn');
+  showView('form', navBtns[0]);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function loadFormFromRecord(r){
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v||'';};
+  set('f-nom',r.nom); set('f-prenom',r.prenom); set('f-date',r.dateBilan);
+  set('f-tel',r.tel); set('f-mail',r.mail);
+  set('f-arrivee',r.arrivee); set('f-nationalite',r.nationalite);
+  set('f-adresse',r.adresse);
+  set('f-ville',r.ville||'Châteauroux'); set('f-sadm-note',r.sitAdmNote);
+  const qpvEl=document.getElementById('f-qpv'); if(qpvEl) qpvEl.checked=!!r.qpv;
+  set('f-contact-presc',r.contactPresc); set('f-remarque',r.remarque);
+
+  // Helper: select a pill in a dynamic container; add value to list if missing
+  const selectPill=(g,v)=>{
+    if(!v)return;
+    if(!pillLists[g].includes(v)){pillLists[g].push(v);savePills(g);}
+    renderPills(g);
+    // now click it on
+    const el=document.querySelector(`#pills-${g} .pill[data-v="${CSS.escape(v)}"]`);
+    if(el) el.classList.add('on');
+  };
+
+  // Genre (static pills)
+  if(r.genre){const el=document.querySelector(`.pill[data-g="genre"][data-v="${r.genre}"]`);if(el)el.classList.add('on');}
+
+  // Dynamic single-select
+  selectPill('orientation',r.orientation);
+  selectPill('lieu',r.lieuAtelier);
+
+  // Dynamic multi-select
+  (r.besoins||[]).forEach(v=>selectPill('besoins',v));
+  (r.prescripteurs||[]).forEach(v=>selectPill('prescripteur',v));
+
+  // Niveaux — new CECRL selectors
+  (r.niveaux||[]).forEach(v=>{
+    const el=document.querySelector(`.niv-header[data-v="${v}"],.niv-sub[data-v="${v}"],.niv-hors-cell[data-v="${v}"]`);
+    if(el) el.classList.add('on');
+  });
+
+  // Calendar
+  setCal(r.ateliers||[]);
+
+  // Bénévoles
+  (r.benevoles||[]).forEach(b=>{const el=document.querySelector(`#benv-select .benv-tag[data-v="${b}"]`);if(el)el.classList.add('on');});
+
+  // Apprenant toggle
+  if(r.apprenant){const t=document.getElementById('tgl-apprenant');t.classList.add('on');t.textContent='✓ Apprenant';}
+
+  // Exam
+  if(r.exam&&r.exam.type&&r.exam.type!=='Aucun'){
+    const typeEl=document.querySelector(`.pill[data-g="examtype"][data-v="${r.exam.type}"]`);
+    if(typeEl){typeEl.classList.add('on');showExamLevels(r.exam.type);}
+    if(r.exam.level){const lvlEl=document.querySelector(`.pill[data-g="examlevel"][data-v="${r.exam.level}"]`);if(lvlEl)lvlEl.classList.add('on');}
+    set('f-exam-date',r.exam.date);
+  }
+
+  // Situation adm
+  (r.situationAdm||[]).forEach(s=>{
+    const v=typeof s==='object'?s.val:s;
+    const expiry=typeof s==='object'?s.expiry:'';
+    const el=document.querySelector(`.sadm-item[data-v="${v}"]`);
+    if(el){el.classList.add('on');el.querySelector('.sadm-chk').textContent='✓';if(expiry){const inp=el.querySelector('.sadm-expiry');if(inp)inp.value=expiry;}}
+  });
+}
+
+function cancelEdit(){
+  editingId=null;
+  resetForm();
+}
+
+function resetForm(){
+  editingId=null;
+  document.querySelectorAll('.niv-header.on,.niv-sub.on,.niv-hors-cell.on').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.sadm-item.on').forEach(i=>{i.classList.remove('on');i.querySelector('.sadm-chk').textContent='';});
+  document.querySelectorAll('.sadm-expiry').forEach(i=>i.value='');
+  document.querySelectorAll('.benv-tag.on').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.ts.on').forEach(s=>s.classList.remove('on'));
+  ['f-nom','f-prenom','f-date','f-tel','f-mail','f-arrivee','f-nationalite','f-adresse','f-remarque','f-sadm-note','f-contact-presc','f-exam-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const qpv=document.getElementById('f-qpv'); if(qpv) qpv.checked=false;
+  document.getElementById('f-ville').value='Châteauroux';
+  const t=document.getElementById('tgl-apprenant');t.classList.remove('on');t.textContent='Pas encore apprenant';
+  ['exam-levels-DELF','exam-levels-TCF','exam-date-row'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
+  // Clear slots
+  slotData={};
+  refreshAllSlots();
+  // Reset edit banner & button
+  const banner=document.getElementById('edit-banner');
+  if(banner) banner.style.display='none';
+  const btn=document.getElementById('btn-add');
+  btn.textContent='➕ Enregistrer cette fiche'; btn.disabled=true;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══ RENDER LIST ══════════════════════════════════════════════════
+let listSort = {col:'id', dir:'desc'};
+
+function sortBy(col){
+  if(listSort.col===col) listSort.dir=listSort.dir==='asc'?'desc':'asc';
+  else {listSort.col=col; listSort.dir='asc';}
+  renderRecords();
+}
+
+function renderRecords(){
+  const c=document.getElementById('records-container');
+  const yr=records.filter(r=>r.annee===annee);
+  document.getElementById('list-sub').textContent=records.length+' apprenant(s) — '+yr.length+' pour '+annee;
+
+  // Search filter
+  const q=(document.getElementById('list-search')||{value:''}).value.trim().toLowerCase();
+  let filtered=q?records.filter(r=>{
+    const txt=[r.nom,r.prenom,r.nationalite,r.ville,r.orientation,...(r.niveaux||[])].join(' ').toLowerCase();
+    return txt.includes(q);
+  }):[...records];
+
+  if(!filtered.length){
+    c.innerHTML='<div class="empty"><div class="ico">📋</div><p>'+(q?'Aucun résultat pour cette recherche.':'Aucune fiche enregistrée.')+'</p></div>';
+    return;
+  }
+
+  // Sort
+  const col=listSort.col, dir=listSort.dir;
+  filtered.sort((a,b)=>{
+    let va,vb;
+    if(col==='nom') {va=(a.nom||'')+(a.prenom||''); vb=(b.nom||'')+(b.prenom||'');}
+    else if(col==='genre'){va=a.genre||''; vb=b.genre||'';}
+    else if(col==='dateBilan'){va=a.dateBilan||''; vb=b.dateBilan||'';}
+    else if(col==='niveaux'){va=(a.niveaux||[]).join(','); vb=(b.niveaux||[]).join(',');}
+    else if(col==='benv'){va=getBenvFromAteliers(a); vb=getBenvFromAteliers(b);}
+    else if(col==='lieu'){va=getLieuFromAteliers(a); vb=getLieuFromAteliers(b);}
+    else if(col==='nationalite'){va=a.nationalite||''; vb=b.nationalite||'';}
+    else {va=a.id; vb=b.id;}
+    if(va<vb) return dir==='asc'?-1:1;
+    if(va>vb) return dir==='asc'?1:-1;
+    return 0;
+  });
+
+  const th=(label,key)=>{
+    const isCur=listSort.col===key;
+    const cls=isCur?(listSort.dir==='asc'?'sort-asc':'sort-desc'):'';
+    return`<th class="${cls}" onclick="sortBy('${key}')">${label}<span class="sort-ico"></span></th>`;
+  };
+
+  let h=`<div style="overflow-x:auto"><table class="rtable"><thead><tr>
+    ${th('Année','id')}${th('Genre','genre')}${th('Nom Prénom','nom')}
+    ${th('Date bilan','dateBilan')}${th('Nationalité','nationalite')}
+    ${th('Niveau(x)','niveaux')}
+    <th>Ateliers</th>${th('Bénévole(s)','benv')}${th('Lieu(x)','lieu')}
+    <th>Examen</th><th>Sit. Adm.</th><th></th>
+  </tr></thead><tbody>`;
+
+  filtered.forEach(r=>{
+    const examStr=r.exam&&r.exam.level?`<span class="tag">${r.exam.level}${r.exam.date?' – '+r.exam.date:''}</span>`:'–';
+    const sadmStr=(r.situationAdm||[]).slice(0,2).map(s=>{
+      const v=typeof s==='object'?s.val:s;
+      return`<span class="tag tag-amber">${v.split('(')[0].trim()}</span>`;
+    }).join(' ')||'–';
+
+    // Ateliers slots
+    let atelierStr='–';
+    if(Array.isArray(r.ateliers)&&r.ateliers.length){
+      const items=typeof r.ateliers[0]==='object'?r.ateliers.map(a=>a.slot):r.ateliers;
+      atelierStr=items.slice(0,2).map(s=>`<span class="tag">${s}</span>`).join(' ');
+      if(items.length>2) atelierStr+=`<span class="tag">+${items.length-2}</span>`;
+    }
+
+    // Bénévoles from ateliers
+    const benvSet=new Set();
+    const lieuSet=new Set();
+    if(Array.isArray(r.ateliers)) r.ateliers.forEach(a=>{
+      if(typeof a==='object'){
+        (a.benevoles||[]).forEach(b=>benvSet.add(b));
+        (a.lieux||[]).forEach(l=>lieuSet.add(l.replace('Centre social ','')));
+      }
+    });
+    const benvStr=benvSet.size?[...benvSet].map(b=>`<span class="tag" style="background:#fde8c8;color:#8a3a00">${b}</span>`).join(' '):'–';
+    const lieuStr=lieuSet.size?[...lieuSet].map(l=>`<span class="tag">${l}</span>`).join(' '):'–';
+
+    h+=`<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:12px">${r.annee||''}</td>
+      <td style="text-align:center">${r.genre||'–'}</td>
+      <td><strong>${r.nom}</strong> ${r.prenom}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;white-space:nowrap">${r.dateBilan||'–'}</td>
+      <td style="font-size:12px">${r.nationalite||'–'}</td>
+      <td><div class="tag-list">${(r.niveaux||[]).map(n=>`<span class="tag">${n}</span>`).join('')||'–'}</div></td>
+      <td><div class="tag-list">${atelierStr}</div></td>
+      <td><div class="tag-list">${benvStr}</div></td>
+      <td><div class="tag-list">${lieuStr}</div></td>
+      <td><div class="tag-list">${examStr}</div></td>
+      <td><div class="tag-list">${sadmStr}</div></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-secondary" style="padding:4px 9px;font-size:12px;margin-right:4px" onclick="editRecord(${r.id})">✏️</button>
+        <button class="btn btn-danger" style="padding:4px 9px;font-size:12px" onclick="delRecord(${r.id})">🗑</button>
+      </td>
+    </tr>`;
+  });
+  h+='</tbody></table></div>';
+  c.innerHTML=h;
+}
+
+function getBenvFromAteliers(r){
+  const s=new Set();
+  if(Array.isArray(r.ateliers)) r.ateliers.forEach(a=>{if(typeof a==='object')(a.benevoles||[]).forEach(b=>s.add(b));});
+  return[...s].join(',');
+}
+function getLieuFromAteliers(r){
+  const s=new Set();
+  if(Array.isArray(r.ateliers)) r.ateliers.forEach(a=>{if(typeof a==='object')(a.lieux||[]).forEach(l=>s.add(l));});
+  return[...s].join(',');
+}
+
+async function delRecord(id) {
+  if(!confirm('Supprimer cette fiche ?')) return;
+  await fetch('/api/fiches/' + id, { method: 'DELETE' });
+  await loadRecords();
+}
+
+// ══ STATS ════════════════════════════════════════════════════════
+function updateStats(){
+  document.getElementById('stat-tot').textContent=records.length;
+  document.getElementById('stat-yr').textContent=records.filter(r=>r.annee===annee).length;
+  // If stats panel visible, refresh it
+  const panel=document.getElementById('stats-panel');
+  if(panel&&panel.style.display!=='none') renderStats();
+}
+
+let statsVisible=false;
+function toggleStats(){
+  statsVisible=!statsVisible;
+  const panel=document.getElementById('stats-panel');
+  panel.style.display=statsVisible?'block':'none';
+  document.getElementById('btn-stats-toggle').textContent=statsVisible?'📊 Masquer les stats':'📊 Afficher les stats';
+  if(statsVisible) renderStats();
+}
+
+function renderStats(){
+  const yr=records.filter(r=>r.annee===annee);
+  document.getElementById('stats-annee-lbl').textContent=`${yr.length} fiche(s) — ${annee}`;
+  const all=yr; // stats sur l'année en cours
+  const total=all.length||1; // avoid div0
+
+  // Genre
+  const h=all.filter(r=>r.genre==='M').length;
+  const f=all.filter(r=>r.genre==='F').length;
+  const nc=all.filter(r=>!r.genre).length;
+
+  // Niveaux — comptage
+  const nivCount={};
+  all.forEach(r=>(r.niveaux||[]).forEach(n=>{nivCount[n]=(nivCount[n]||0)+1;}));
+  const nivSorted=Object.entries(nivCount).sort((a,b)=>b[1]-a[1]);
+
+  // Nationalités
+  const natCount={};
+  all.forEach(r=>{const n=r.nationalite||'Non renseignée'; natCount[n]=(natCount[n]||0)+1;});
+  const natSorted=Object.entries(natCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+
+  // Statuts adm
+  const sadmCount={};
+  all.forEach(r=>(r.situationAdm||[]).forEach(s=>{
+    const v=typeof s==='object'?s.val:s;
+    const k=v.split('(')[0].trim().split('–')[0].trim();
+    sadmCount[k]=(sadmCount[k]||0)+1;
+  }));
+  const sadmSorted=Object.entries(sadmCount).sort((a,b)=>b[1]-a[1]);
+
+  // Bénévoles
+  const benvCount={};
+  all.forEach(r=>{
+    const bs=new Set();
+    (r.ateliers||[]).forEach(a=>{if(typeof a==='object')(a.benevoles||[]).forEach(b=>bs.add(b));});
+    bs.forEach(b=>{benvCount[b]=(benvCount[b]||0)+1;});
+  });
+  const benvSorted=Object.entries(benvCount).sort((a,b)=>b[1]-a[1]);
+
+  // Apprenants
+  const appNb=all.filter(r=>r.apprenant).length;
+
+  const block=(title,rows,maxVal)=>{
+    const rHtml=rows.map(([lbl,val])=>{
+      const pct=maxVal?Math.round(val/maxVal*100):0;
+      return`<div class="stat-row">
+        <span class="stat-row-lbl">${lbl}</span>
+        <span class="stat-row-val">${val}</span>
+      </div>
+      <div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div>`;
+    }).join('');
+    return`<div class="stat-block"><div class="stat-block-title">${title}</div>${rHtml}</div>`;
+  };
+
+  let html='';
+  // Genre block
+  html+=block('👤 Genre',[['Hommes',h],['Femmes',f],['Non renseigné',nc]],Math.max(h,f,nc));
+  // Apprenants
+  html+=block('🎓 Statut',[['Apprenants',appNb],['En attente',all.length-appNb]],all.length);
+  // Niveaux
+  if(nivSorted.length) html+=block('🎯 Niveaux',nivSorted.slice(0,8),nivSorted[0][1]);
+  // Nationalités
+  if(natSorted.length) html+=block('🌍 Nationalités',natSorted,natSorted[0][1]);
+  // Statuts adm
+  if(sadmSorted.length) html+=block('📋 Situation administrative',sadmSorted,sadmSorted[0][1]);
+  // Bénévoles
+  if(benvSorted.length) html+=block('🤝 Bénévoles (nbre de suivis)',benvSorted,benvSorted[0][1]);
+
+  document.getElementById('stats-grid').innerHTML=html;
+}
+
+// ══ EXPORT / IMPORT ══════════════════════════════════════════════
+function exportCSV(){
+  const cols=['annee','genre','nom','prenom','dateBilan','tel','mail','adresse','ville',
+    'niveaux','besoins','orientation','lieuAtelier','ateliers','benevoles','apprenant',
+    'exam','situationAdm','sitAdmNote','prescripteurs','contactPresc'];
+  const bom='\uFEFF';
+  let csv=cols.join(';')+'\n';
+  records.forEach(r=>{
+    csv+=cols.map(c=>{
+      let v=r[c];
+      if(c==='exam'&&v){v=`${v.level||''}${v.date?' ('+v.date+')':''}`;}
+      else if(c==='situationAdm'&&Array.isArray(v)){
+        v=v.map(s=>typeof s==='object'?s.val+(s.expiry?' exp:'+s.expiry:''):s).join(' | ');
+      }
+      else if(Array.isArray(v))v=v.join(' | ');
+      if(v===true)v='Oui';if(v===false)v='Non';
+      return '"'+String(v||'').replace(/"/g,'""')+'"';
+    }).join(';')+'\n';
+  });
+  dl('fiches_CRIA_'+annee+'.csv',bom+csv,'text/csv;charset=utf-8;');
+  toast('✓ CSV exporté — ouvrable dans Excel');
+}
+
+function exportXLS(){
+  const COLS=[
+    {key:'annee',label:'Année'},
+    {key:'genre',label:'Genre'},
+    {key:'nom',label:'Nom'},
+    {key:'prenom',label:'Prénom'},
+    {key:'dateBilan',label:'Date bilan'},
+    {key:'tel',label:'Téléphone'},
+    {key:'mail',label:'Email'},
+    {key:'adresse',label:'Adresse'},
+    {key:'ville',label:'Ville'},
+    {key:'niveaux',label:'Niveau(x)'},
+    {key:'besoins',label:'Besoins'},
+    {key:'orientation',label:'Orientation'},
+    {key:'lieuAtelier',label:'Lieu atelier'},
+    {key:'ateliers',label:'Disponibilités'},
+    {key:'benevoles',label:'Bénévole(s)'},
+    {key:'apprenant',label:'Apprenant'},
+    {key:'exam',label:'Examen'},
+    {key:'examDate',label:'Date examen'},
+    {key:'situationAdm',label:'Situation adm.'},
+    {key:'sitAdmDates',label:'Dates expiration'},
+    {key:'sitAdmNote',label:'Notes adm.'},
+    {key:'prescripteurs',label:'Prescripteur(s)'},
+    {key:'contactPresc',label:'Contact prescripteur'},
+  ];
+
+  const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  const cell=(v,isDate=false)=>{
+    if(isDate&&v) return `<Cell ss:StyleID="date"><Data ss:Type="String">${esc(v)}</Data></Cell>`;
+    return `<Cell><Data ss:Type="String">${esc(v)}</Data></Cell>`;
+  };
+
+  const sorted=[...records].sort((a,b)=>b.id-a.id);
+
+  let rows='';
+  // Header row
+  rows+=`<Row ss:StyleID="header">${COLS.map(c=>`<Cell ss:StyleID="header"><Data ss:Type="String">${esc(c.label)}</Data></Cell>`).join('')}</Row>\n`;
+
+  sorted.forEach(r=>{
+    const get=(key)=>{
+      if(key==='niveaux') return (r.niveaux||[]).join(', ');
+      if(key==='besoins') return (r.besoins||[]).join(', ');
+      if(key==='ateliers') return (r.ateliers||[]).join(', ');
+      if(key==='benevoles') return (r.benevoles||[]).join(', ');
+      if(key==='apprenant') return r.apprenant?'Oui':'Non';
+      if(key==='exam') return r.exam&&r.exam.level?r.exam.level:'';
+      if(key==='examDate') return r.exam&&r.exam.date?r.exam.date:'';
+      if(key==='situationAdm') return (r.situationAdm||[]).map(s=>typeof s==='object'?s.val:s).join(', ');
+      if(key==='sitAdmDates') return (r.situationAdm||[]).filter(s=>typeof s==='object'&&s.expiry).map(s=>s.val.split('(')[0].trim()+': '+s.expiry).join(' | ');
+      return r[key]||'';
+    };
+    rows+=`<Row>${COLS.map(c=>cell(get(c.key),c.key==='dateBilan'||c.key==='examDate'||c.key==='sitAdmDates')).join('')}</Row>\n`;
+  });
+
+  const xml=`<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:x="urn:schemas-microsoft-com:office:excel">
+ <Styles>
+  <Style ss:ID="header">
+   <Font ss:Bold="1" ss:Color="#FFFFFF" ss:Size="11"/>
+   <Interior ss:Color="#7A2500" ss:Pattern="Solid"/>
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#F0A040"/></Borders>
+  </Style>
+  <Style ss:ID="date">
+   <Font ss:Color="#7A4000"/>
+   <Interior ss:Color="#FFF8F0" ss:Pattern="Solid"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Fiches CRIA ${annee}">
+  <Table>
+   <Column ss:Width="45"/>
+   <Column ss:Width="40"/>
+   <Column ss:Width="100"/>
+   <Column ss:Width="80"/>
+   <Column ss:Width="75"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="120"/>
+   <Column ss:Width="70"/>
+   <Column ss:Width="80"/>
+   <Column ss:Width="80"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="120"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="80"/>
+   <Column ss:Width="55"/>
+   <Column ss:Width="80"/>
+   <Column ss:Width="75"/>
+   <Column ss:Width="140"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="130"/>
+   ${rows}
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <FreezePanes/>
+   <FrozenNoSplit/>
+   <SplitHorizontal>1</SplitHorizontal>
+   <TopRowBottomPane>1</TopRowBottomPane>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>`;
+
+  const bom='\uFEFF';
+  dl('fiches_CRIA_'+annee+'.xls', bom+xml, 'application/vnd.ms-excel;charset=utf-8');
+  toast('✓ Fichier Excel exporté !');
+}
+
+function exportJSON(){
+  const data={exportDate:new Date().toISOString(),annee,benevoles,records};
+  dl('fiches_CRIA_'+annee+'_sauvegarde.json',JSON.stringify(data,null,2),'application/json');
+  toast('✓ Sauvegarde JSON téléchargée');
+}
+
+function importJSON(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.records){
+        if(confirm(`Importer ${data.records.length} fiche(s) ?\nLes fiches existantes seront conservées.`)){
+          data.records.forEach(r=>{if(!records.find(x=>x.id===r.id))records.push(r);});
+// records sauvegardés via API
+        }
+      }
+      if(data.benevoles){benevoles=data.benevoles;saveBenv();}
+      updateStats();renderRecords();renderBenv();
+      toast('✓ Import réussi !');
+    }catch(e){alert('Fichier JSON invalide.');}
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+function dl(filename,content,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=filename;a.click();
+}
+
+// ══ FIELD TOGGLES ════════════════════════════════════════════════
+function renderFtg(){
+  const g=document.getElementById('ftg-grid');g.innerHTML='';
+  FIELD_CARDS.forEach(f=>{
+    const el=document.createElement('span');
+    el.className='ftg'+(hiddenFields.includes(f.id)?' off':'');
+    el.textContent=(hiddenFields.includes(f.id)?'':'✓ ')+f.label;
+    el.onclick=()=>{
+      if(hiddenFields.includes(f.id))hiddenFields=hiddenFields.filter(x=>x!==f.id);
+      else hiddenFields.push(f.id);
+      localStorage.setItem('cria_hidden',JSON.stringify(hiddenFields));
+      applyHidden();renderFtg();
+    };
+    g.appendChild(el);
+  });
+}
+function applyHidden(){
+  FIELD_CARDS.forEach(f=>{
+    const c=document.getElementById(f.card);
+    if(c)c.style.display=hiddenFields.includes(f.id)?'none':'';
+  });
+}
+
+// ══ CLEAR ALL ════════════════════════════════════════════════════
+function clearAll(){
+  if(!confirm('Effacer TOUTES les fiches ?\nCette action est irréversible.\nPensez à exporter avant !'))return;
+  records=[];updateStats();renderRecords();fetch('/api/fiches',{method:'DELETE'});
+  toast('Toutes les fiches ont été supprimées.');
+}
+
+// ══ TOAST ════════════════════════════════════════════════════════
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+async function loadRecords() {
+  const res = await fetch('/api/fiches');
+  if(res.status === 401) { window.location.href = '/login'; return; }
+  const raw = await res.json();
+  records = raw.map(r => {
+    const data = r.data ? JSON.parse(r.data) : {};
+    return { ...data, id: r.id, nom: r.nom, prenom: r.prenom, annee: r.annee, genre: r.genre };
+  });
+  renderRecords();
+  updateStats();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadRecords();
+});
+
+</script>
+<script>fetch("/api/auth/session").then(r=>r.json()).then(s=>{if(!s||!s.user)window.location.href="/login";});</script>
+</body>
+</html>
