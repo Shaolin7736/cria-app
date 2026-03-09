@@ -1647,3 +1647,13 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>fetch("/api/auth/session").then(r=>r.json()).then(s=>{if(!s||!s.user)window.location.href="/login";});</script>
 </body>
 </html>
+<script>
+const _token = new URLSearchParams(window.location.search).get('token');
+const _origFetch = window.fetch;
+window.fetch = function(url, opts = {}) {
+  if (url.startsWith('/api/')) {
+    opts.headers = { ...opts.headers, 'x-auth-token': _token };
+  }
+  return _origFetch(url, opts);
+};
+</script>

@@ -1,5 +1,4 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { checkAuth } from "@/lib/checkAuth";
 import { createClient } from "@libsql/client";
 import { NextResponse } from "next/server";
 
@@ -8,16 +7,14 @@ const db = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+export async function GET(req) {
+  if (!await checkAuth(req)) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   const res = await db.execute("SELECT * FROM fiches ORDER BY id DESC");
   return NextResponse.json(res.rows);
 }
 
 export async function POST(req) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  if (!await checkAuth(req)) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   const body = await req.json();
   const { nom, prenom, annee, genre, ...rest } = body;
   await db.execute({
