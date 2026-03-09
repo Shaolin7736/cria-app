@@ -25,14 +25,3 @@ export async function POST(req) {
   });
   return NextResponse.json({ ok: true });
 }
-```
-
-Sauvegardez **Cmd+S** et fermez.
-
----
-
-**Fichier 2 — PUT et DELETE pour modifier et supprimer une fiche**
-```
-mkdir -p ~/Desktop/cria-app/app/api/fiches/\[id\]
-touch ~/Desktop/cria-app/app/api/fiches/\[id\]/route.js
-open -e ~/Desktop/cria-app/app/api/fiches/\[id\]/route.js
