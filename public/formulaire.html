@@ -1080,15 +1080,38 @@ function checkBtn(){
   document.getElementById('btn-add').disabled=!(document.getElementById('f-nom').value.trim()&&document.getElementById('f-prenom').value.trim());
 }
 
-async function saveRecord() {
-  checkBtn();
-  const r = buildRecord();
+async function saveRecord(){
+  const r={
+    annee,
+    genre:getRadio('genre'),
+    nom:document.getElementById('f-nom').value.trim().toUpperCase(),
+    prenom:document.getElementById('f-prenom').value.trim(),
+    dateBilan:document.getElementById('f-date').value,
+    tel:document.getElementById('f-tel').value.trim(),
+    mail:document.getElementById('f-mail').value.trim(),
+    arrivee:document.getElementById('f-arrivee').value,
+    nationalite:document.getElementById('f-nationalite').value.trim(),
+    adresse:document.getElementById('f-adresse').value.trim(),
+    ville:document.getElementById('f-ville').value.trim(),
+    qpv:document.getElementById('f-qpv')?document.getElementById('f-qpv').checked:false,
+    niveaux:getNiv(),besoins:getMulti('besoins'),
+    orientation:getRadio('orientation'),
+    ateliers:getCal(),
+    apprenant:document.getElementById('tgl-apprenant').classList.contains('on'),
+    exam:getExam(),
+    situationAdm:getSitAdm(),
+    sitAdmNote:document.getElementById('f-sadm-note').value.trim(),
+    prescripteurs:getMulti('prescripteur'),
+    contactPresc:document.getElementById('f-contact-presc').value.trim(),
+    remarque:document.getElementById('f-remarque')?document.getElementById('f-remarque').value.trim():'',
+  };
   if(editingId !== null) {
     await fetch('/api/fiches/' + editingId, {
       method: 'PUT',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(r)
     });
+    toast('✓ Fiche mise à jour !');
     cancelEdit();
   } else {
     await fetch('/api/fiches', {
@@ -1096,6 +1119,7 @@ async function saveRecord() {
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(r)
     });
+    toast('✓ Fiche enregistrée !');
   }
   resetForm();
   await loadRecords();
